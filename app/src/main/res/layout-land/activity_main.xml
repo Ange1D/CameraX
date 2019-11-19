@@ -27,8 +27,8 @@
 
     <View
         android:id="@+id/cameraBottomView"
-        android:layout_width="match_parent"
-        android:layout_height="130dp"
+        android:layout_width="130dp"
+        android:layout_height="match_parent"
         android:background="@color/black"
         app:layout_constraintBottom_toBottomOf="parent" />
 
@@ -39,7 +39,7 @@
         android:background="@android:color/transparent"
         android:src="@drawable/ic_capture_button"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/cameraBottomView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/cameraBottomView"
         tools:ignore="ContentDescription" />
