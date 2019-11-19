@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.graphics.Matrix
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.util.Log
 import android.util.Size
 import android.view.Surface
@@ -46,7 +47,7 @@ class MainActivity : AppCompatActivity() {
 
         // Every time the provided texture view changes, recompute layout
         viewFinder.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
-            updateTransform()
+            updateTransform(1920,1080)
         }
     }
 
@@ -59,7 +60,7 @@ class MainActivity : AppCompatActivity() {
 
         // Create configuration object for the viewfinder use case
         val previewConfig = PreviewConfig.Builder().apply {
-            setTargetResolution(Size(640, 480))
+            setTargetResolution(Size(1920, 1080))
         }.build()
 
 
@@ -75,7 +76,7 @@ class MainActivity : AppCompatActivity() {
             parent.addView(viewFinder, 0)
 
             viewFinder.surfaceTexture = it.surfaceTexture
-            updateTransform()
+            updateTransform(1920,1080)
         }
 
         // Add this before CameraX.bindToLifecycle
@@ -127,7 +128,7 @@ class MainActivity : AppCompatActivity() {
         CameraX.bindToLifecycle(this, preview, imageCapture)
     }
 
-    private fun updateTransform() {
+    private fun updateTransform(width:Int,height:Int) {
         val matrix = Matrix()
 
         // Compute the center of the view finder
@@ -143,6 +144,17 @@ class MainActivity : AppCompatActivity() {
             else -> return
         }
         matrix.postRotate(-rotationDegrees.toFloat(), centerX, centerY)
+
+        val metrics = DisplayMetrics().also { viewFinder.display.getRealMetrics(it) }
+        val previewWidth = metrics.widthPixels
+        val previewHeight = metrics.heightPixels
+
+        matrix.postScale(
+            previewWidth.toFloat() / height,
+            previewHeight.toFloat() / width,
+            centerX,
+            centerY
+        )
 
         // Finally, apply transformations to our TextureView
         viewFinder.setTransform(matrix)
