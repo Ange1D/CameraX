@@ -3,6 +3,7 @@ package com.ange1d.camerax
 import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.Matrix
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -12,6 +13,7 @@ import android.view.Surface
 import android.view.TextureView
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.camera.core.*
 import androidx.core.app.ActivityCompat
@@ -28,6 +30,8 @@ private const val REQUEST_CODE_PERMISSIONS = 10
 private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
 
 class MainActivity : AppCompatActivity() {
+
+    private var preView: ImageView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +53,8 @@ class MainActivity : AppCompatActivity() {
         viewFinder.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
             updateTransform(1920,1080)
         }
+
+        preView = findViewById(R.id.preview)
     }
 
     // Add this after onCreate
@@ -115,6 +121,9 @@ class MainActivity : AppCompatActivity() {
                         Log.d("CameraXApp", msg)
                         viewFinder.post {
                             Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
+                            val uriImagen: Uri = Uri.parse(file.absolutePath)
+                            preView?.setImageURI(uriImagen)
+
                         }
                     }
                 })
